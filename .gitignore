@@ -1,0 +1,33 @@
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets and private keys
+keys/
+*.pem
+*.key
+*.der
+*.p12
+*.pfx
+*.crt
+trust_store.json
+.env
+
+# Local application data
+instance/
+uploads/
+downloads/
+received/
+*.sdx.json
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
