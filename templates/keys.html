@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Keys{% endblock %}{% block body %}
+<span class="role r-keys">Public-key infrastructure</span>
+<h1>Key Directory</h1><p class="sub">Public keys are published so anyone can verify. Private keys stay with each role, encrypted on disk (PKCS#8 + passphrase).</p>
+<div class="grid g3">{% for k in keys %}<div class="card"><h3>{{ k.role }}</h3><div class="kv small"><div>Algorithm</div><div>{{ k.alg }}</div><div>Fingerprint</div><div class="mono">{{ k.fp }}</div><div>Purpose</div><div>{{ k.use }}</div></div></div>{% endfor %}</div>
+{% endblock %}

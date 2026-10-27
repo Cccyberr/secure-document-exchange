@@ -1,0 +1,32 @@
+{% extends "base.html" %}{% block title %}SocialSphere{% endblock %}{% block body %}
+<div class="row" style="justify-content:space-between"><div><span class="role r-feed">Phase 2 · Social media</span>
+<h1>Social Media</h1><p class="sub">Images get posted, forwarded through WhatsApp (re-compressed) and screenshotted, just like in real life.</p></div><span class="live">live</span></div>
+<div class="grid" style="grid-template-columns:1fr 320px">
+<div id="feedlist" data-live="post reset" class="grid g2">
+{% for p in posts %}
+<div class="card post" id="post-{{ p.id }}">
+<div class="meta"><span><span class="who">@{{ p.handle }}</span> · post #{{ p.id }}</span><span>{{ p.created_at }}</span></div>
+<img class="shot" src="{{ url_for('img', name=p.file) }}" loading="lazy">
+{% if p.caption %}<div>{{ p.caption }}</div>{% endif %}
+<div class="small muted">{{ p.via }}{% if p.parent %} · from #{{ p.parent }}{% endif %}</div>
+<div class="row">
+<form method="post" action="{{ url_for('feed_action', pid=p.id, action='forward') }}"><button class="btn sm">↪ Forward (WhatsApp)</button></form>
+<form method="post" action="{{ url_for('feed_action', pid=p.id, action='screenshot') }}"><button class="btn sm">📸 Screenshot &amp; repost</button></form>
+<form method="post" action="{{ url_for('verify') }}"><input type="hidden" name="post_id" value="{{ p.id }}"><button class="btn sm">✔ Check label</button></form>
+</div>
+<details><summary style="color:var(--red)">⚠ Report to Cyber Police</summary>
+<form method="post" action="{{ url_for('feed_action', pid=p.id, action='report') }}">
+<label>Complainant</label><input name="complainant" value="Victim (name withheld)">
+<label>Complaint</label><textarea name="complaint">A morphed image of me is being circulated without consent.</textarea>
+<button class="btn red sm" style="margin-top:8px">File complaint</button></form></details>
+</div>
+{% else %}<div class="card muted">No posts yet. Generate an image on PixelForge and post it here.</div>{% endfor %}
+</div>
+<div><div class="card"><h3>Post a normal camera photo</h3><p class="muted small">Untagged images.</p>
+<form method="post" action="{{ url_for('feed_upload') }}" enctype="multipart/form-data">
+<label>Handle</label><input name="handle" value="camera_user">
+{% set pid='f' %}{% set default_sample='' %}{% include "_picker.html" %}
+<label>Caption</label><input name="caption">
+<button class="btn" style="margin-top:10px">Post</button></form></div></div>
+</div>
+{% endblock %}

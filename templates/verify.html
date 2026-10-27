@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Public Verifier{% endblock %}{% block body %}
+<span class="role r-public">Phase 3 · Anyone</span>
+<h1>Public Verifier</h1><p class="sub">Check whether an image is AI-generated. Uses only <b>public keys</b>: anyone can verify, no one learns who made it.</p>
+<div class="grid" style="grid-template-columns:360px 1fr">
+<div class="card"><form method="post" enctype="multipart/form-data">
+<label>Pick a Social Media post</label><select name="post_id"><option value="">—</option>{% for p in posts %}<option value="{{ p.id }}">#{{ p.id }} @{{ p.handle }}</option>{% endfor %}</select>
+{% set pid='v' %}{% set default_sample='' %}{% include "_picker.html" %}
+<button class="btn primary" style="margin-top:12px">Verify</button></form>
+{% if preview %}<img class="shot" style="margin-top:14px" src="{{ preview }}">{% endif %}</div>
+<div class="card">{% if res %}{% set police=False %}{% include "_analysis.html" %}{% else %}<p class="muted">Upload an image or pick a post to verify.</p>{% endif %}</div>
+</div>{% endblock %}

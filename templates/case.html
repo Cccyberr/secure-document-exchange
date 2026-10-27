@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% block title %}Case #{{ c.id }}{% endblock %}{% block body %}
+<span class="role r-police">Phase 4 · Investigation</span>
+<div class="row" style="justify-content:space-between"><h1>Case #{{ c.id }} <span class="status">{{ c.status }}</span></h1>
+<a class="btn" href="{{ url_for('report', cid=c.id) }}" target="_blank">📄 Evidence report</a></div>
+<p class="sub">{{ c.complainant }}: “{{ c.complaint }}”</p>
+<div class="grid" style="grid-template-columns:360px 1fr">
+<div>
+<div class="card"><h3>Evidence</h3><img class="shot" src="{{ url_for('img', name=c.file) }}">
+<div class="kv small" style="margin-top:10px"><div>SHA-256</div><div class="mono">{{ res.evidence_sha256 }}</div><div>Analysed</div><div>{{ res.analysed_at }}</div>
+{% if post %}<div>Source post</div><div>#{{ post.id }} by @{{ post.handle }}<br><span class="muted">{{ post.via }}</span></div>{% endif %}</div></div>
+
+<div class="card" style="margin-top:18px" id="wf" data-live="warrant">
+<h3>Investigation workflow</h3>
+<div class="timeline">
+<div class="ev done">Complaint registered · {{ c.created_at }}</div>
+<div class="ev {{ 'done' if res.envelope else 'now' }}">Forensic analysis: {{ res.verdict }}</div>
+{% for w in warrants %}<div class="ev {{ 'done' if w.status=='APPROVED' else 'now' }}">Warrant request #{{ w.id }}: <b>{{ w.status }}</b>{% if w.judge %} · {{ w.judge }}{% endif %}</div>{% endfor %}
+{% if identity %}<div class="ev done">Creator identified</div>{% endif %}
+</div>
+{% set approved = warrants|selectattr('status','equalto','APPROVED')|list %}
+{% if res.verdict == 'AI_GENERATED' and not identity %}
+  {% if not warrants or warrants[0].status == 'REJECTED' %}
+  <form method="post" action="{{ url_for('request_warrant', cid=c.id) }}"><label>Investigating officer</label><input name="officer" value="SI Anjali R., Cyber Cell Kollam">
+  <label>Grounds for warrant</label><textarea name="reason">Non-consensual morphed image of the complainant (IT Act S.66E/67, BNS S.77). Provenance tag verified; request release of creator identity for record {{ c.record_id }}.</textarea>
+  <button class="btn gold" style="margin-top:8px">⚖ Request court warrant</button></form>
+  {% endif %}
+  <form method="post" action="{{ url_for('unmask', cid=c.id) }}" style="margin-top:12px">
+  <label>Police private-key passphrase {% if not approved %}<span class="pill p-warn">no warrant yet</span>{% endif %}</label>
+  <input type="password" name="passphrase" placeholder="police@123 (demo)">
+  <button class="btn red" style="margin-top:8px">🔓 Unmask creator</button>
+  {% if not approved %}<p class="muted small" style="margin-top:6px">Try it now: it will fail, proving police cannot unmask anyone alone.</p>{% endif %}</form>
+{% endif %}
+</div></div>
+
+<div>
+<div class="card">{% set police=True %}{% include "_analysis.html" %}
+{% if res.envelope %}<details><summary>Raw sealed envelope</summary><pre>{{ res.envelope|tojson(indent=2) }}</pre></details>{% endif %}</div>
+{% if identity %}<div class="card" id="identity" style="margin-top:18px;border-color:#7a2e2e">
+<h2 style="color:var(--red)">🎯 Creator identified</h2>
+<div class="kv">{% for k in ID_ORDER if k in identity %}<div>{{ k|replace('_',' ') }}</div><div>{{ identity[k] }}</div>{% endfor %}</div>
+<p class="muted small" style="margin-top:10px">Next step: notice to PixelForge AI (record {{ c.record_id }}) and the ISP for subscriber details of {{ identity.upload_ip }}.</p></div>{% endif %}
+</div></div>{% endblock %}

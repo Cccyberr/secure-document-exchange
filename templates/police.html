@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Cyber Police{% endblock %}{% block body %}
+<div class="row" style="justify-content:space-between"><div><span class="role r-police">Phase 4 · Law enforcement</span>
+<h1>Cyber Police · Case Dashboard</h1><p class="sub">Complaints arrive in real time from Social Media. Open a case to run forensic analysis.</p></div><span class="live">live</span></div>
+<div class="grid" style="grid-template-columns:1fr 340px">
+<div class="card" id="cases" data-live="case warrant reset">
+<table><tr><th>Case</th><th>Evidence</th><th>Complainant</th><th>Status</th><th>Opened</th><th></th></tr>
+{% for c in cases %}<tr><td><b>#{{ c.id }}</b></td><td><img src="{{ url_for('img', name=c.file) }}" style="height:48px;border-radius:6px"></td>
+<td>{{ c.complainant }}<div class="muted small">{{ c.complaint[:70] }}</div></td><td><span class="status">{{ c.status }}</span></td><td class="small">{{ c.created_at }}</td>
+<td><a class="btn sm" href="{{ url_for('case', cid=c.id) }}">Open →</a></td></tr>
+{% else %}<tr><td colspan="6" class="muted">No complaints yet.</td></tr>{% endfor %}</table></div>
+<div class="card"><h3>Register a walk-in complaint</h3><p class="muted small">Victim brings a screenshot or downloaded copy of the image.</p>
+<form method="post" action="{{ url_for('police_upload') }}" enctype="multipart/form-data">
+<label>Complainant</label><input name="complainant" value="Walk-in victim">
+<label>Complaint</label><textarea name="complaint">Received this morphed image on WhatsApp.</textarea>
+{% set pid='c' %}{% set default_sample='' %}{% include "_picker.html" %}
+<button class="btn red" style="margin-top:10px">Register case</button></form></div>
+</div>{% endblock %}

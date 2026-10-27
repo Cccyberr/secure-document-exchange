@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Attack Lab{% endblock %}{% block body %}
+<span class="role r-lab">Testing &amp; security analysis</span>
+<h1>Attack Lab</h1><p class="sub">Runs real attacks against a tagged image and a robustness sweep over common transformations.</p>
+<div class="card"><form method="post" class="row"><select name="gid" style="max-width:520px">{% for g in gens %}<option value="{{ g.id }}" {{ 'selected' if out and out.g.id==g.id }}>#{{ g.id }} · {{ g.record_id }} · @{{ g.username }} · {{ g.prompt }}</option>{% else %}<option value="">Generate an image on PixelForge first</option>{% endfor %}</select>
+<button class="btn primary">▶ Run all attacks</button></form></div>
+{% if out %}
+<div class="card" style="margin-top:18px"><h2>Attacks</h2>
+<table><tr><th>Attack</th><th>System response</th><th>Defended?</th><th>Why</th></tr>
+{% for name, verdict, ok, why in out.attacks %}<tr><td>{{ name }}</td><td><span class="status">{{ verdict }}</span></td><td>{% if ok %}<span class="pill p-ok">YES</span>{% else %}<span class="pill p-bad">NO</span>{% endif %}</td><td class="muted">{{ why }}</td></tr>{% endfor %}</table></div>
+<div class="card" style="margin-top:18px"><h2>Robustness: does provenance survive?</h2>
+<table><tr><th>Transformation</th><th>Layer A (LSB)</th><th>Layer B (robust)</th><th>Final verdict</th><th>Analysis time</th></tr>
+{% for r in out.rows %}<tr><td>{{ r.name }}</td><td>{% if r.lsb %}<span class="pill p-ok">survives</span>{% else %}<span class="pill p-bad">destroyed</span>{% endif %}</td>
+<td>{% if r.robust %}<span class="pill p-ok">survives</span>{% else %}<span class="pill p-bad">lost</span>{% endif %}</td>
+<td><span class="status">{{ r.verdict }}</span></td><td>{{ '%.0f'|format(r.ms) }} ms</td></tr>{% endfor %}</table>
+{% endif %}{% endblock %}

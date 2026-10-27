@@ -1,0 +1,15 @@
+transformation,lsb_survival,robust_survival,verified
+Original PNG (lossless copy),1.0,1.0,1.0
+JPEG quality 95,0.0,1.0,1.0
+JPEG quality 80,0.0,1.0,1.0
+"WhatsApp forward (≤1280px, JPEG 60)",0.0,1.0,1.0
+JPEG quality 50,0.0,1.0,1.0
+JPEG quality 30,0.0,1.0,1.0
+"Screenshot & repost (80%, JPEG 85)",0.0,1.0,1.0
+Upscale 150%,0.0,1.0,1.0
+Downscale 50%,0.0,1.0,1.0
+Downscale 50% + JPEG 70,0.0,1.0,1.0
+Brightness +15%,0.0,1.0,1.0
+Gaussian blur r=1,0.0,1.0,1.0
+Crop 10% borders,0.0,0.0,0.0
+Rotate 2°,0.0,0.0,0.0

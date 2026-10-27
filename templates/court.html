@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block title %}Court{% endblock %}{% block body %}
+<div class="row" style="justify-content:space-between"><div><span class="role r-court">Phase 5 · Judicial oversight</span>
+<h1>Court · Warrant Requests</h1><p class="sub">The magistrate holds key share #2. Approving a warrant decrypts it with the Court's private key, re-encrypts it for the police and signs the order (RSA-PSS).</p></div><span class="live">live</span></div>
+<div id="wlist" data-live="warrant reset" class="grid">
+{% for w in warrants %}<div class="card"><div class="grid" style="grid-template-columns:140px 1fr 330px">
+<img class="shot" src="{{ url_for('img', name=w.file) }}">
+<div><h3>Request #{{ w.id }} · Case #{{ w.case_id }} <span class="status">{{ w.status }}</span></h3>
+<div class="kv small"><div>Officer</div><div>{{ w.officer }}</div><div>Record ID</div><div class="mono">{{ w.record_id }}</div><div>Grounds</div><div>{{ w.reason }}</div><div>Complaint</div><div>{{ w.complainant }}: {{ w.complaint }}</div><div>Received</div><div>{{ w.created_at }}</div>
+{% if w.warrant %}{% set wd = w.warrant|fromjson %}<div>Warrant ID</div><div><b>{{ wd.order.warrant_id }}</b></div><div>Court signature</div><div class="mono">{{ wd.court_sig[:40] }}…</div>{% endif %}</div></div>
+<div>{% if w.status == 'PENDING' %}
+<form method="post" action="{{ url_for('court_decide', wid=w.id, decision='approve') }}">
+<label>Magistrate</label><input name="judge" value="Judicial First Class Magistrate, Kollam">
+<label>Court private-key passphrase</label><input type="password" name="passphrase" placeholder="court@123 (demo)">
+<button class="btn gold" style="margin-top:8px;width:100%">✔ Approve &amp; sign warrant</button></form>
+<form method="post" action="{{ url_for('court_decide', wid=w.id, decision='reject') }}"><button class="btn sm" style="margin-top:8px;width:100%">✖ Reject</button></form>
+{% else %}<p class="muted small">Decided {{ w.decided_at }} by {{ w.judge }}</p>{% endif %}</div>
+</div></div>{% else %}<div class="card muted">No warrant requests.</div>{% endfor %}
+</div>{% endblock %}

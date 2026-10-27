@@ -1,0 +1,16 @@
+{# expects res, police(bool) #}
+{% set icons={'AI_GENERATED':'🤖','FORGED':'⛔','TRANSPLANTED':'⚠️','NO_TAG':'❔'} %}
+<div class="verdict {{ res.verdict }}"><div class="big">{{ icons[res.verdict] }}</div><div>
+<div style="font-weight:800;font-size:17px">{{ {'AI_GENERATED':'VERIFIED AI-GENERATED IMAGE','FORGED':'FORGED / TAMPERED TAG','TRANSPLANTED':'TAG DOES NOT BELONG TO THIS IMAGE','NO_TAG':'NO PROVENANCE TAG FOUND'}[res.verdict] }}</div>
+<div class="muted">{{ res.summary }}</div></div></div>
+<h3>Layers</h3>
+<div class="kv"><div>Layer A · LSB envelope</div><div>{{ res.layers.lsb }}</div><div>Layer B · Robust watermark</div><div>{{ res.layers.robust }}</div>
+{% if res.source %}<div>Record obtained from</div><div>{{ res.source }}</div>{% endif %}</div>
+{% if res.checks %}<h3 style="margin-top:14px">Cryptographic checks</h3>
+<table>{% for name, ok, detail in res.checks %}<tr><td>{{ name }}</td><td>{% if ok %}<span class="pill p-ok">PASS</span>{% else %}<span class="pill p-bad">FAIL</span>{% endif %}</td><td class="muted">{{ detail }}</td></tr>{% endfor %}</table>{% endif %}
+{% if res.envelope %}<h3 style="margin-top:14px">Public provenance</h3>
+<div class="kv">{% for k,v in res.envelope.pub.items() %}<div>{{ k }}</div><div class="{{ 'mono' if k in ('record_id','phash','platform_key_fp') }}">{{ v }}</div>{% endfor %}</div>
+<h3 style="margin-top:14px">Creator identity</h3>
+<div class="sealed">🔒 <b>Sealed.</b> Encrypted with {{ res.envelope.sealed.alg }}.<br>
+<span class="small">{% if police %}Requires the Cyber Police private key <b>and</b> a court-released key share.{% else %}Only law enforcement can open this, and only with a court warrant.{% endif %}</span></div>
+{% endif %}

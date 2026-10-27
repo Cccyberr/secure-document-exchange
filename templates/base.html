@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}TraceMark{% endblock %} · TraceMark</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><header><nav class="nav">
+<a class="brand" href="{{ url_for('home') }}"><span class="logo">TM</span><span>TRACEMARK<small>AI IMAGE PROVENANCE</small></span></a>
+{% set ep = request.endpoint or '' %}
+<a class="tab {{ 'on' if ep=='platform' }}" href="{{ url_for('platform') }}"><span class="dot" style="background:var(--violet)"></span>1 ·AI Model</a>
+<a class="tab {{ 'on' if ep=='feed' }}" href="{{ url_for('feed') }}"><span class="dot" style="background:var(--blue)"></span>2 · Social media</a>
+<a class="tab {{ 'on' if ep=='verify' }}" href="{{ url_for('verify') }}"><span class="dot" style="background:var(--green)"></span>3 · Public Verifier</a>
+<a class="tab {{ 'on' if ep in ('police','case','report') }}" href="{{ url_for('police') }}"><span class="dot" style="background:var(--red)"></span>4 · Cyber Police{% if nav_cases %}<span class="badge">{{ nav_cases }}</span>{% endif %}</a>
+<a class="tab {{ 'on' if ep=='court' }}" href="{{ url_for('court') }}"><span class="dot" style="background:var(--gold)"></span>5 · Court{% if nav_pending %}<span class="badge">{{ nav_pending }}</span>{% endif %}</a>
+<a class="tab {{ 'on' if ep=='lab' }}" href="{{ url_for('lab') }}"><span class="dot" style="background:var(--amber)"></span>Attack Lab</a>
+<a class="tab {{ 'on' if ep=='keys' }}" href="{{ url_for('keys') }}"><span class="dot" style="background:var(--cyan)"></span>Keys</a>
+</nav></header>
+<main>
+{% with msgs = get_flashed_messages(with_categories=true) %}{% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}{% endwith %}
+{% block body %}{% endblock %}
+</main>
+<div id="toasts"></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
