@@ -1,8 +1,0 @@
-# Direct dependencies only.
-# STEP 1 (Milestone 0): install from these ranges.
-# STEP 2: Member A replaces each line with the exact version that
-#         installed (e.g. flask==X.Y.Z), commits it, and everyone
-#         reinstalls. See README "Pinning versions".
-flask>=3.0,<4
-cryptography>=42
-pytest>=8
